@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)n)i(&hvn^2p07bz9(d+h46$rcww4h4)_0xo+wd$$h%*92y$^('
-
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-)n)i(&hvn^2p07bz9(d+h46$rcww4h4)_0xo+wd$$h%*92y$^(')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['mrsharadshinde.pythonanywhere.com', 'www.yourcustomdomain.com']
+# Set DEBUG to False for production. The .lower() == 'true' part handles string-to-boolean conversion.
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+#'mrsharadshinde.pythonanywhere.com', 'www.yourcustomdomain.com',
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -124,7 +124,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import os
+
 # Media files settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
