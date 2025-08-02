@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-)n)i(&hvn^2p07bz9(d+h
 # Set DEBUG to False for production. The .lower() == 'true' part handles string-to-boolean conversion.
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 #'mrsharadshinde.pythonanywhere.com', 'www.yourcustomdomain.com',
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','https://sharadshinde-portfolio.onrender.com']
 
 
 # Application definition
