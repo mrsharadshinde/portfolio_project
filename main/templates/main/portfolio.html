@@ -1,106 +1,794 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ name }} - Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body class="text-slate-700">
+    <meta
+      name="description"
+      content="{{ profile.objective|truncatechars:160 }}"
+    />
+    <meta
+      name="keywords"
+      content="Portfolio, {{ profile.profession }}, {{ profile.fname }}, Web Developer, AI Developer"
+    />
+    <meta name="author" content="{{ profile.fname }}" />
 
-    <!-- Header & Navigation -->
-    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-10 border-b border-slate-200">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold gradient-text">{{ name }}</a>
-            <nav class="hidden md:flex space-x-8 text-slate-600 font-medium">
-                <a href="#about" class="hover:text-indigo-600 transition-colors">About</a>
-                <a href="#skills" class="hover:text-indigo-600 transition-colors">Skills</a>
-                <a href="#projects" class="hover:text-indigo-600 transition-colors">Projects</a>
-                <a href="#contact" class="hover:text-indigo-600 transition-colors">Contact</a>
-            </nav>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta
+      property="og:title"
+      content="{{ profile.fname }} - Professional Portfolio"
+    />
+    <meta
+      property="og:description"
+      content="Explore the projects and technical proficiency of {{ profile.fname }}."
+    />
+    {% if profile.profile_image %}
+    <meta property="og:image" content="{{ profile.profile_image.url }}" />
+    {% endif %}
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="{{ profile.fname }} - Portfolio" />
+    <meta
+      property="twitter:description"
+      content="{{ profile.objective|truncatechars:160 }}"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Roboto+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              navy: "#1B325F",
+              sky: "#9CC4E4",
+              ice: "#E9F2F9",
+              ocean: "#3A89C9",
+              coral: "#F26C4F",
+            },
+            animation: {
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
+      if (
+        localStorage.getItem("color-theme") === "dark" ||
+        (!("color-theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
+
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}" />
+  </head>
+
+  <body
+    class="bg-ice dark:bg-slate-950 text-navy dark:text-ice transition-colors duration-500"
+  >
+    <header
+      class="bg-white/80 dark:bg-navy/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 border-b border-sky/30 dark:border-slate-800 transition-all duration-300"
+    >
+      <div
+        class="container mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a
+          href="#"
+          class="text-2xl font-bold text-navy dark:text-white uppercase tracking-tighter"
+          >{{ name }}</a
+        >
+        <div class="flex items-center space-x-6">
+          <nav
+            id="navbar"
+            class="hidden md:flex space-x-8 text-slate-600 dark:text-slate-400 font-medium"
+          >
+            <a href="#about" class="nav-link">About</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#experience" class="nav-link">Experience</a>
+            <a href="#education" class="nav-link">Education</a>
+            <a href="#certificates" class="nav-link">Certificates</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#contact" class="nav-link">Contact</a>
+          </nav>
+          <button
+            id="theme-toggle"
+            class="relative inline-flex items-center h-8 w-14 rounded-full bg-navy/10 dark:bg-white/10 transition-colors border border-navy/20 dark:border-white/20"
+          >
+            <div
+              id="theme-toggle-indicator"
+              class="absolute left-1 dark:left-7 w-6 h-6 bg-white dark:bg-navy rounded-full shadow-md transition-all duration-300 flex items-center justify-center"
+            >
+              <i
+                id="theme-toggle-dark-icon"
+                class="fas fa-moon text-ocean text-[10px] hidden"
+              ></i>
+              <i
+                id="theme-toggle-light-icon"
+                class="fas fa-sun text-coral text-[10px] hidden"
+              ></i>
+            </div>
+          </button>
         </div>
+      </div>
     </header>
 
     <main class="pt-24">
-        <!-- Hero Section -->
-        <section id="about" class="container mx-auto px-6 py-20 text-center">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-slate-800 mb-4">
-                SQL & Python Developer
-            </h1>
-            <p class="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto mb-8">
-                {{ objective }}
-            </p>
-            <div class="flex justify-center space-x-4">
-                <a href="{{ linkedin }}" target="_blank" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition-transform hover:scale-105">
-                    View LinkedIn
-                </a>
-                <a href="{{ github }}" target="_blank" class="bg-slate-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-900 transition-transform hover:scale-105">
-                    View GitHub
-                </a>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills" class="bg-white py-20">
-            <div class="container mx-auto px-6">
-                <h2 class="section-title text-3xl font-bold text-slate-800 mb-12">Technical Skills</h2>
-                <div class="flex flex-wrap gap-4 justify-center">
-                    {% for skill in skills %}
-                    <div class="bg-indigo-100 text-indigo-700 font-semibold mono px-4 py-2 rounded-full text-sm">
-                        {{ skill.name }}
-                    </div>
-                    {% endfor %}
+      <section id="about" class="relative overflow-hidden py-12 lg:py-24">
+        <div class="container mx-auto px-6">
+          <div
+            class="flex flex-col lg:flex-row items-center justify-center gap-12"
+          >
+            <div class="w-full lg:w-5/12 z-10 text-center lg:text-left">
+              <div class="max-w-xl">
+                <h1
+                  class="mb-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-navy dark:text-white"
+                >
+                  {{ profile.profession }}
+                </h1>
+                <p
+                  class="mb-8 text-lg leading-relaxed text-slate-600 dark:text-slate-400"
+                >
+                  {{ profile.objective }}
+                </p>
+                <div
+                  class="flex flex-wrap justify-center gap-4 lg:justify-start"
+                >
+                  <a
+                    href="{{ profile.linkedin }}"
+                    target="_blank"
+                    class="inline-flex items-center justify-center rounded-xl bg-navy px-6 py-3 text-lg font-bold text-white hover:bg-ocean transition-all hover:scale-105 active:scale-95 shadow-lg shadow-ocean/20"
+                    >LinkedIn</a
+                  >
+                  <a
+                    href="{{ profile.github }}"
+                    target="_blank"
+                    class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-lg font-bold text-white hover:bg-black transition-all hover:scale-105 active:scale-95 shadow-lg"
+                    >GitHub</a
+                  >
+                  {% if profile.resume %}
+                  <a
+                    href="{{ profile.resume.url }}"
+                    download
+                    class="inline-flex items-center justify-center rounded-xl bg-coral px-6 py-3 text-lg font-bold text-white hover:opacity-90 transition-all hover:scale-105 shadow-lg shadow-coral/20"
+                  >
+                    <i class="fas fa-download mr-2"></i> Download CV
+                  </a>
+                  {% endif %}
                 </div>
+              </div>
             </div>
-        </section>
+            <div class="w-full lg:w-6/12 flex justify-center mt-12 lg:mt-0">
+              <div class="relative w-full max-w-lg group">
+                <div
+                  class="absolute inset-0 -z-10 bg-ocean/20 blur-3xl rounded-full scale-90"
+                ></div>
+                {% if profile.profile_image %}
+                <img
+                  src="{{profile.profile_image.url}}"
+                  alt="{{ profile.fname }}"
+                  class="h-auto w-full max-h-[500px] object-cover rounded-3xl shadow-2xl border border-white dark:border-slate-800"
+                />
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="py-20">
-            <div class="container mx-auto px-6">
-                <h2 class="section-title text-3xl font-bold text-slate-800 mb-12">My Projects</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {% for project in projects %}
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                        <!-- Project Image -->
-                        {% if project.image %}
-                        <img src="{{ project.image.url }}" alt="{{ project.title }} screenshot" class="w-full h-48 object-cover">
-                        {% endif %}
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-slate-800 mb-2">{{ project.title }}</h3>
-                            <p class="text-slate-600 mb-4">{{ project.description }}</p>
-                            <p class="text-sm text-slate-500 mono mb-4"><span class="font-bold">Technologies:</span> {{ project.technologies }}</p>
-                            {% if project.link %}
-                            <a href="{{ project.link }}" target="_blank" class="text-indigo-600 font-semibold hover:underline">View Project &rarr;</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endfor %}
+      <section
+        id="skills"
+        class="bg-white dark:bg-slate-900 py-20 border-y border-sky/20"
+      >
+        <div class="container mx-auto px-6">
+          <h2
+            class="text-3xl font-bold text-navy dark:text-white mb-12 text-center lg:text-left tracking-tight"
+          >
+            Technical Proficiency
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for category, skills in grouped_skills.items %}
+            <div
+              class="group bg-ice dark:bg-slate-800/40 p-8 rounded-3xl border border-sky/20 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:shadow-2xl transition-all duration-500"
+            >
+              <div class="flex items-center mb-8">
+                <div
+                  class="w-10 h-10 bg-ocean rounded-xl flex items-center justify-center text-white group-hover:rotate-12 transition-transform shadow-lg shadow-ocean/20"
+                >
+                  {% if "Backend" in category %}<i class="fas fa-server"></i> {%
+                  elif "Frontend" in category %}<i
+                    class="fas fa-laptop-code"
+                  ></i>
+                  {% elif "AI" in category or "Data" in category %}<i
+                    class="fas fa-brain"
+                  ></i>
+                  {% else %}<i class="fas fa-layer-group"></i>{% endif %}
                 </div>
+                <h3
+                  class="ml-4 text-xl font-bold text-navy dark:text-slate-100"
+                >
+                  {{ category }}
+                </h3>
+              </div>
+              <div class="space-y-4">
+                {% for skill in skills %}
+                <div
+                  class="flex items-center p-3 rounded-xl hover:bg-sky/20 transition-colors group/item"
+                >
+                  <div
+                    class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center border border-sky/30 text-ocean"
+                  >
+                    <i class="{{ skill.icon_class }} text-xs"></i>
+                  </div>
+                  <span
+                    class="ml-3 font-semibold text-slate-600 dark:text-slate-400 text-sm uppercase tracking-wide"
+                    >{{ skill.name }}</span
+                  >
+                </div>
+                {% endfor %}
+              </div>
             </div>
-        </section>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="bg-slate-800 text-white py-20">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl font-bold mb-4">Get In Touch</h2>
-                <p class="text-slate-300 mb-8 max-w-xl mx-auto">I'm currently seeking new opportunities. Feel free to reach out via email or connect with me on social media.</p>
-                <a href="mailto:{{ email }}" class="inline-block bg-indigo-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-indigo-700 transition-transform hover:scale-105">
-                    {{ email }}
-                </a>
+      <section id="experience" class="py-20 bg-ice dark:bg-slate-950">
+        <div class="container mx-auto px-6 max-w-4xl">
+          <h2
+            class="text-3xl font-bold text-navy dark:text-white mb-12 text-center"
+          >
+            Work Experience
+          </h2>
+          <div class="space-y-8">
+            {% for exp in experiences %}
+            <div
+              class="relative pl-8 border-l-2 border-ocean/30 dark:border-slate-800 hover:border-coral transition-colors pb-8"
+            >
+              <div
+                class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-navy border-4 border-ice dark:border-slate-950"
+              ></div>
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-transparent dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <span
+                  class="text-xs font-bold text-ocean dark:text-sky uppercase tracking-widest"
+                  >{{ exp.duration }}</span
+                >
+                <h3
+                  class="text-xl font-bold text-navy dark:text-slate-100 mt-1"
+                >
+                  {{ exp.role }}
+                </h3>
+                <p
+                  class="text-lg font-medium text-slate-500 dark:text-slate-400 mb-4"
+                >
+                  {{ exp.company }}
+                </p>
+                <div
+                  class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm"
+                >
+                  {{ exp.description|linebreaks }}
+                </div>
+              </div>
             </div>
-        </section>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <section id="education" class="py-24 bg-white dark:bg-slate-900">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="text-center mb-20">
+            <h2
+              class="text-3xl font-bold text-navy dark:text-white tracking-tight"
+            >
+              Academic Background
+            </h2>
+            <div class="mt-2 h-1 w-16 bg-coral mx-auto rounded-full"></div>
+          </div>
+          <div class="relative">
+            <div
+              class="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-ocean/20 dark:bg-slate-800"
+            ></div>
+            <div class="space-y-12">
+              {% for edu in education %}
+              <div class="relative pl-12 md:pl-20">
+                <div
+                  class="absolute left-4 md:left-8 transform -translate-x-1/2 flex flex-col items-center z-10"
+                >
+                  <div
+                    class="bg-navy dark:bg-white text-white dark:text-navy px-2 py-1 mb-2 rounded text-[10px] font-bold font-mono"
+                  >
+                    {{ edu.passingYear|date:"Y" }}
+                  </div>
+                  <div
+                    class="w-4 h-4 rounded-full bg-coral border-4 border-white dark:border-slate-900"
+                  ></div>
+                </div>
+                <div
+                  class="bg-ice dark:bg-slate-800/40 p-6 rounded-2xl border border-sky/20 dark:border-slate-800 hover:shadow-xl transition-all duration-300"
+                >
+                  <div
+                    class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4"
+                  >
+                    <div>
+                      <h3 class="text-xl font-bold text-navy dark:text-white">
+                        {{ edu.courseName }}
+                      </h3>
+                      <p
+                        class="text-base font-medium text-slate-500 dark:text-slate-400"
+                      >
+                        {{ edu.college }}
+                      </p>
+                    </div>
+                    <div
+                      class="flex items-center gap-2 bg-white dark:bg-navy px-3 py-1.5 rounded-xl shadow-sm border border-sky/10 dark:border-slate-700 self-start"
+                    >
+                      <i class="fas fa-graduation-cap text-ocean text-sm"></i>
+                      <span
+                        class="text-sm font-bold text-navy dark:text-slate-200"
+                        >GPA: {{ edu.CGPA }}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="text-xs text-slate-500 font-mono"
+                      >{{edu.admissionYear|date:"Y"}}-{{edu.passingYear|date:"Y"}}</span
+                    >
+                    <span
+                      class="px-2 py-1 bg-navy/5 dark:bg-white/5 text-navy dark:text-sky text-[10px] font-bold uppercase rounded border border-navy/10"
+                      >Academic Excellence</span
+                    >
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="certificates"
+        class="py-20 bg-ice dark:bg-slate-950 overflow-hidden"
+      >
+        <div class="container mx-auto px-6">
+          <h2
+            class="text-3xl font-bold text-navy dark:text-white mb-12 text-center"
+          >
+            Certifications
+          </h2>
+          <div class="relative group px-4 md:px-12">
+            <button
+              id="prev-cert"
+              class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-navy/80 p-3 rounded-full shadow-lg text-navy dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-coral hover:text-white focus:outline-none"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div
+              id="cert-slider"
+              class="flex overflow-x-auto gap-8 pb-8 no-scrollbar scroll-smooth snap-x snap-mandatory"
+            >
+              {% for cert in certificates %}
+              <div
+                class="min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-sky/10 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all flex flex-col"
+              >
+                <div
+                  class="aspect-video overflow-hidden bg-slate-100 dark:bg-slate-800 relative"
+                >
+                  {% if cert.thumbnail %}
+                  <img
+                    src="{{ cert.thumbnail.url }}"
+                    alt="{{ cert.courseName }}"
+                    class="w-full h-full object-cover"
+                  />
+                  {% else %}
+                  <div
+                    class="flex items-center justify-center h-full text-slate-400"
+                  >
+                    <i class="fas fa-certificate text-4xl"></i>
+                  </div>
+                  {% endif %}
+                  <div
+                    class="absolute inset-0 bg-ocean/0 group-hover:bg-ocean/5 transition-colors"
+                  ></div>
+                </div>
+                <div class="p-6">
+                  <span
+                    class="text-xs font-bold text-ocean uppercase tracking-widest"
+                    >{{ cert.year.year }}</span
+                  >
+                  <h3
+                    class="text-lg font-bold text-navy dark:text-white mt-1 mb-6 leading-snug"
+                  >
+                    {{ cert.courseName }}
+                  </h3>
+                  <div class="flex gap-2">
+                    <a
+                      href="{{ cert.certificate.url }}"
+                      target="_blank"
+                      class="flex-1 inline-flex items-center justify-center gap-2 bg-navy dark:bg-ocean text-white py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all"
+                    >
+                      <i class="fas fa-file-pdf text-xs"></i> View
+                    </a>
+                    {% if cert.credential_link %}
+                    <a
+                      href="{{ cert.credential_link }}"
+                      target="_blank"
+                      class="px-4 inline-flex items-center justify-center bg-ice dark:bg-slate-800 text-navy dark:text-sky py-2.5 rounded-xl text-sm font-bold hover:bg-sky/20 transition-all border border-sky/20"
+                    >
+                      <i class="fas fa-check-circle text-coral"></i>
+                    </a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            <button
+              id="next-cert"
+              class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-navy/80 p-3 rounded-full shadow-lg text-navy dark:text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-coral hover:text-white focus:outline-none"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="py-20 bg-white dark:bg-slate-900">
+        <div class="container mx-auto px-6 text-center">
+          <h2
+            class="text-3xl font-bold text-navy dark:text-white mb-12 text-left"
+          >
+            My Projects
+          </h2>
+          <div
+            id="projects-grid"
+            class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left transition-all duration-500"
+          >
+            {% for project in projects %}
+            <div
+              class="project-card {% if forloop.counter > 6 %}hidden{% endif %} bg-ice dark:bg-slate-800/40 rounded-3xl overflow-hidden border border-sky/10 dark:border-slate-800 hover:shadow-2xl transition-all duration-300"
+            >
+              {% if project.image %}<img
+                src="{{ project.image.url }}"
+                alt="{{ project.title }}"
+                class="w-full h-48 object-cover"
+              />{% endif %}
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-navy dark:text-white mb-1">
+                  {{ project.title }}
+                </h3>
+                <div class="mb-4">
+                  <p
+                    class="text-[10px] text-ocean font-mono bg-white dark:bg-navy px-2 py-1 rounded inline-block border border-sky/20 uppercase"
+                  >
+                    {{ project.technologies }}
+                  </p>
+                </div>
+                <div
+                  class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed"
+                >
+                  {{ project.description|linebreaks }}
+                </div>
+                {% if project.link %}<a
+                  href="{{ project.link }}"
+                  target="_blank"
+                  class="text-coral font-bold hover:underline flex items-center"
+                  >View Project
+                  <i class="fas fa-external-link-alt ml-2 text-xs"></i></a
+                >{% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% if projects|length > 6 %}
+          <div class="mt-12 flex justify-center gap-4">
+            <button
+              id="view-more-projects"
+              class="px-8 py-3 bg-navy text-white font-bold rounded-2xl hover:bg-ocean transition-all shadow-lg"
+            >
+              View More Projects
+            </button>
+            <button
+              id="view-less-projects"
+              class="hidden px-8 py-3 border-2 border-navy text-navy dark:border-sky dark:text-sky font-bold rounded-2xl hover:bg-navy hover:text-white dark:hover:bg-sky dark:hover:text-navy transition-all shadow-lg"
+            >
+              View Less
+            </button>
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <section id="contact" class="bg-navy dark:bg-slate-950 text-white py-24">
+        <div class="container mx-auto px-6 max-w-6xl">
+          <div class="grid lg:grid-cols-2 gap-12 items-start">
+            <div class="space-y-10">
+              <div>
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-coral">
+                  Let's Connect
+                </h2>
+                <p class="text-sky/60 text-lg leading-relaxed">
+                  I'm currently seeking new opportunities. Feel free to reach
+                  out via email, phone, or any of the platforms listed below!
+                </p>
+              </div>
+              <div class="space-y-6">
+                <div class="flex items-center space-x-4 group">
+                  <div
+                    class="bg-white/5 p-4 rounded-2xl text-sky border border-white/10 group-hover:bg-ocean group-hover:text-white transition-all"
+                  >
+                    <i class="fas fa-envelope text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-[10px] uppercase font-bold text-sky/40"
+                      >Official Email</span
+                    >
+                    <div class="flex items-center justify-between">
+                      <a
+                        href="mailto:{{ profile.email }}"
+                        class="text-xl font-semibold hover:text-coral transition-colors truncate"
+                        >{{ profile.email }}</a
+                      >
+                      <button
+                        onclick="copyToClipboard('{{ profile.email }}', 'Email copied!')"
+                        class="text-sky/30 hover:text-white p-2 transition-colors"
+                      >
+                        <i class="far fa-copy"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-4 group">
+                  <div
+                    class="bg-white/5 p-4 rounded-2xl text-coral border border-white/10 group-hover:bg-coral group-hover:text-white transition-all"
+                  >
+                    <i class="fas fa-phone text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <span class="text-[10px] uppercase font-bold text-sky/40"
+                      >Contact Number</span
+                    >
+                    <div class="flex items-center justify-between">
+                      <a
+                        href="tel:{{ profile.phone }}"
+                        class="text-xl font-semibold hover:text-coral transition-colors"
+                        >{{ profile.phone }}</a
+                      >
+                      <button
+                        onclick="copyToClipboard('{{ profile.phone }}', 'Phone number copied!')"
+                        class="text-slate-500 hover:text-white p-2 transition-colors"
+                      >
+                        <i class="far fa-copy"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-6 border-t border-white/10">
+                <h3
+                  class="text-xs font-bold mb-6 text-sky/40 uppercase tracking-widest flex items-center"
+                >
+                  <span class="w-8 h-px bg-white/20 mr-3"></span> Professional
+                  Links
+                </h3>
+                <div class="flex flex-wrap gap-4">
+                  {% for link in otherLinks %}
+                  <a
+                    href="{{ link.link }}"
+                    target="_blank"
+                    class="bg-white/5 hover:bg-ocean border border-white/10 px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 group"
+                  >
+                    {% if "leetcode" in link.name|lower %}<i
+                      class="fas fa-code text-sky group-hover:text-white"
+                    ></i>
+                    {% elif "hackerrank" in link.name|lower %}<i
+                      class="fab fa-hackerrank text-sky group-hover:text-white"
+                    ></i>
+                    {% elif "kaggle" in link.name|lower %}<i
+                      class="fab fa-kaggle text-sky group-hover:text-white"
+                    ></i>
+                    {% else %}<i
+                      class="fas fa-external-link-alt text-xs text-sky group-hover:text-white"
+                    ></i
+                    >{% endif %}
+                    <span class="text-sm font-medium tracking-wide"
+                      >{{ link.name }}</span
+                    >
+                  </a>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-slate-900 text-navy dark:text-white p-8 rounded-3xl shadow-2xl border border-sky/10 transform lg:translate-y-[-20px]"
+            >
+              <form id="contact-form" method="POST">
+                {% csrf_token %}
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                  <div class="space-y-2">
+                    <label
+                      class="text-[10px] font-bold uppercase text-slate-400"
+                      >Name</label
+                    >
+                    {{ form.name }}
+                  </div>
+                  <div class="space-y-2">
+                    <label
+                      class="text-[10px] font-bold uppercase text-slate-400"
+                      >Email Address</label
+                    >
+                    {{ form.email }}
+                  </div>
+                </div>
+                <div class="mb-6 space-y-2">
+                  <label class="text-[10px] font-bold uppercase text-slate-400"
+                    >Subject</label
+                  >
+                  {{ form.subject }}
+                </div>
+                <div class="mb-8 space-y-2">
+                  <label class="text-[10px] font-bold uppercase text-slate-400"
+                    >Message Details</label
+                  >
+                  {{ form.message }}
+                </div>
+                <button
+                  type="submit"
+                  class="w-full bg-navy hover:bg-ocean text-white font-bold py-4 rounded-2xl transition-all transform hover:scale-[1.01] active:scale-95"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white py-6">
-        <div class="container mx-auto px-6 text-center text-slate-500">
-            <p>&copy; {% now "Y" %} {{ name }}. All Rights Reserved.</p>
+    <!-- cgatbot bubble  -->
+    <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+      <div
+        id="ai-chat-window"
+        class="hidden w-80 md:w-96 bg-white dark:bg-slate-900 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-sky/10 dark:border-slate-800 flex flex-col mb-4 transition-all duration-300 transform scale-95 opacity-0 overflow-hidden"
+      >
+        <div class="p-4 bg-navy flex justify-between items-center text-white">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20"
+            >
+              <i class="fas fa-robot text-sm text-sky"></i>
+            </div>
+            <span class="font-bold text-sm tracking-wide">Assistant</span>
+          </div>
+          <button
+            onclick="toggleChat()"
+            class="hover:bg-white/20 p-2 rounded-lg transition-colors"
+          >
+            <i class="fas fa-times"></i>
+          </button>
         </div>
+        <div
+          id="chat-messages"
+          class="h-96 overflow-y-auto p-4 space-y-4 text-sm bg-ice dark:bg-slate-950/50 scrollbar-hide"
+        >
+          <div
+            class="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none border border-sky/5 dark:border-slate-800 text-navy dark:text-slate-300 shadow-sm leading-relaxed"
+          >
+            Welcome! I'm an AI assistant for {{ profile.fname }}'s professional
+            background. How can I help you today?
+          </div>
+        </div>
+        <div
+          id="chat-chips"
+          class="px-4 py-2 flex flex-wrap gap-2 bg-ice dark:bg-slate-900 border-t border-sky/10"
+        >
+          <button
+            onclick="sendQuickQuery('What are your top technical skills?')"
+            class="text-[10px] bg-white dark:bg-slate-800 border border-sky/20 px-2 py-1 rounded-full hover:bg-ocean hover:text-white transition-all"
+          >
+            Skills
+          </button>
+          <button
+            onclick="sendQuickQuery('Tell me about your AI projects.')"
+            class="text-[10px] bg-white dark:bg-slate-800 border border-sky/20 px-2 py-1 rounded-full hover:bg-ocean hover:text-white transition-all"
+          >
+            AI Projects
+          </button>
+          <button
+            onclick="sendQuickQuery('Are you available for internships or roles?')"
+            class="text-[10px] bg-white dark:bg-slate-800 border border-sky/20 px-2 py-1 rounded-full hover:bg-ocean hover:text-white transition-all"
+          >
+            Availability
+          </button>
+        </div>
+        <form
+          id="ai-chat-form"
+          class="p-4 border-t border-sky/10 dark:border-slate-800 bg-white dark:bg-slate-900 flex space-x-2"
+        >
+          <input
+            type="hidden"
+            name="csrfmiddlewaretoken"
+            value="{{ csrf_token }}"
+          />
+          <input
+            type="text"
+            id="ai-user-input"
+            placeholder="Type your message..."
+            class="flex-1 bg-ice dark:bg-slate-950 border border-sky/10 dark:border-slate-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-1 focus:ring-ocean dark:text-white"
+            required
+          />
+          <button
+            type="submit"
+            class="bg-navy text-white p-3 rounded-xl hover:bg-ocean transition-all hover:scale-105 shadow-md"
+          >
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+      <button
+        onclick="toggleChat()"
+        id="chat-bubble"
+        class="w-14 h-14 bg-coral rounded-full shadow-2xl flex items-center justify-center text-white text-2xl hover:bg-navy hover:scale-110 active:scale-95 transition-all duration-100 animate-pulse-slow group"
+      >
+        <i class="fas fa-comment-dots"></i>
+        <span
+          class="absolute right-16 bg-navy text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+        >
+          Chat with Ai
+        </span>
+      </button>
+      <!-- whatsaapppp -->
+      <a
+        href="https://wa.me/91{{ profile.phone|cut:' ' }}"
+        target="_blank"
+        id="whatsapp-bubble"
+        class="fixed bottom-24 right-6 w-14 h-14 bg-[#25D366] rounded-full shadow-2xl flex items-center justify-center text-white text-2xl hover:scale-110 active:scale-95 transition-all z-[90] group"
+      >
+        <i class="fab fa-whatsapp"></i>
+        <span
+          class="absolute right-16 bg-navy text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+        >
+          Chat with me
+        </span>
+      </a>
+    </div>
+
+    <!-- footer -->
+    <footer
+      class="bg-navy dark:bg-slate-950 text-sky/30 py-12 border-t border-white/5"
+    >
+      <div class="container mx-auto px-6 text-center">
+        <p class="text-xs uppercase tracking-widest">
+          &copy; {% now "Y" %} {{ name }}. All rights reserved.
+        </p>
+      </div>
     </footer>
 
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      const CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
+    <script src="{% static 'main/js/script.js' %}"></script>
+  </body>
 </html>
