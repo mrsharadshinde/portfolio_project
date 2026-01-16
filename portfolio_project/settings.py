@@ -16,10 +16,10 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-for-lo
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 # Added railway wildcard and maintained local access
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.up.railway.app', 'sharadshinde-portfolio.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'sharad.up.railway.app', 'sharadshinde-portfolio.onrender.com']
 
 # Required for Django Admin/Forms to work on Railway's HTTPS
-CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app', 'https://sharadshinde-portfolio.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://sharad.up.railway.app', 'https://sharadshinde-portfolio.onrender.com']
 
 # --- APPLICATION DEFINITION ---
 INSTALLED_APPS = [
