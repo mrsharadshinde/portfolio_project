@@ -1,5 +1,5 @@
 import os
-import dj_database_url
+
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -14,12 +14,33 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-for-lo
 
 # Convert string 'True'/'False' from .env to Boolean
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+# --- SECURITY ---
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-for-local')
 
-# Added railway wildcard and maintained local access
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'sharad.up.railway.app', 'sharadshinde-portfolio.onrender.com']
+# This reads from your .env file
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+
+if DEBUG:
+    # LOCAL SETTINGS
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    # These MUST be False for local running
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+else:
+    # PRODUCTION SETTINGS (PythonAnywhere/Render)
+    ALLOWED_HOSTS = ['sharad.pythonanywhere.com', 'sharadshinde-portfolio.onrender.com']
+    
+    # Force HTTPS in production
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # Required for Django Admin/Forms to work on Railway's HTTPS
-CSRF_TRUSTED_ORIGINS = ['https://sharad.up.railway.app', 'https://sharadshinde-portfolio.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://sharad.pythonanywhere.com', 'https://sharadshinde-portfolio.onrender.com']
 
 # --- APPLICATION DEFINITION ---
 INSTALLED_APPS = [
@@ -66,17 +87,11 @@ WSGI_APPLICATION = 'portfolio_project.wsgi.application'
 
 # --- DATABASE ---
 # Automatically uses Railway PostgreSQL if DATABASE_URL exists, else uses local SQLite
-if 'DATABASE_URL' in os.environ:
-    DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    print("Postgres URL not found, using sqlite instead")
-    DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
 }
 
 
