@@ -59,35 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prevCertBtn.onclick = () => certSlider.scrollBy({ left: -400, behavior: 'smooth' });
     }
 
-    // --- 4. Projects "View More/Less" Logic ---
-    const viewMoreBtn = document.getElementById('view-more-projects');
-    const viewLessBtn = document.getElementById('view-less-projects');
-
-    if (viewMoreBtn && viewLessBtn) {
-        viewMoreBtn.addEventListener('click', function() {
-            const hiddenCards = document.querySelectorAll('.project-card.hidden');
-            hiddenCards.forEach(card => {
-                card.classList.remove('hidden');
-                card.classList.add('animate-fade-in');
-                card.dataset.wasHidden = "true"; // Mark cards that were hidden
-            });
-            viewMoreBtn.classList.add('hidden');
-            viewLessBtn.classList.remove('hidden');
-        });
-
-        viewLessBtn.addEventListener('click', function() {
-            const cardsToHide = document.querySelectorAll('.project-card[data-was-hidden="true"]');
-            cardsToHide.forEach(card => {
-                card.classList.add('hidden');
-                card.classList.remove('animate-fade-in');
-            });
-            viewLessBtn.classList.add('hidden');
-            viewMoreBtn.classList.remove('hidden');
-            
-            // Optional: Scroll back to projects header when closing
-            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
-        });
-    }
+   
 
     // --- 5. AJAX Contact Form Logic ---
     const contactForm = document.getElementById("contact-form");
@@ -204,6 +176,34 @@ document.addEventListener('DOMContentLoaded', () => {
             msgContainer.scrollTop = msgContainer.scrollHeight;
         });
     });
+
+    // --- 7. Projects "View More/Less" Logic (MOVE INSIDE DOMContentLoaded) ---
+    const viewMoreBtn = document.getElementById('view-more-projects');
+    const viewLessBtn = document.getElementById('view-less-projects');
+
+    if (viewMoreBtn && viewLessBtn) {
+        viewMoreBtn.addEventListener('click', function() {
+            const hiddenCards = document.querySelectorAll('.project-card.hidden');
+            hiddenCards.forEach(card => {
+                card.classList.remove('hidden');
+                card.classList.add('animate-fade-in');
+                card.dataset.wasHidden = "true";
+            });
+            viewMoreBtn.classList.add('hidden');
+            viewLessBtn.classList.remove('hidden');
+        });
+
+        viewLessBtn.addEventListener('click', function() {
+            const cardsToHide = document.querySelectorAll('.project-card[data-was-hidden="true"]');
+            cardsToHide.forEach(card => {
+                card.classList.add('hidden');
+                card.classList.remove('animate-fade-in');
+            });
+            viewLessBtn.classList.add('hidden');
+            viewMoreBtn.classList.remove('hidden');
+            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 });
 
 // --- Utility Functions ---
@@ -227,14 +227,12 @@ window.toggleChat = function() {
     }
 }
 
-// Quick questions for chat
 window.sendQuickQuery = function(queryText) {
     const input = document.getElementById("ai-user-input");
     const form = document.getElementById("ai-chat-form");
     
     if (input && form) {
         input.value = queryText;
-        // Trigger the submit event manually
         form.dispatchEvent(new Event('submit'));
     }
 };
